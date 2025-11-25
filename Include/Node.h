@@ -46,3 +46,34 @@ public:
     account_Node* GetLeft() const { return left_Child; }
 };
 
+void addEnd(account_Node* root,account_Node* newAccount){
+    if(root->GetAccountId()<newAccount->GetAccountId()){
+        if(root->GetRight()==nullptr){
+            root->SetRight(newAccount);
+        }else{
+            addEnd(root->GetRight(),newAccount);
+        }
+    }else{
+        if(root->GetLeft()==nullptr){
+            root->SetLeft(newAccount);
+        }else{
+            addEnd(root->GetLeft(),newAccount);
+        }
+    }
+}
+
+void addAccount(account_Node root){
+    account_Node* newAccount = new account_Node();
+    history_Node* history = new history_Node();
+    int id = 0;
+    string name = "NewAccount";
+    double balance = 0.0;
+
+    
+    newAccount->SetAccountId(id);
+    newAccount->SetName(name);
+    newAccount->SetBalance(balance);
+    newAccount->SetHistory(history);
+    addEnd(&root,newAccount);
+};
+
