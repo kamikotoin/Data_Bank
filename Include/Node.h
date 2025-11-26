@@ -78,9 +78,63 @@ private:
 	string accountName;
 	double balance;
 
-	TransactionNode* historyHead;
+	TransactionHistory* transactions;
 	AccountNode* left;
 	AccountNode* right;
+
+	public:
+	AccountNode(int accountNumber, string accountName, double balance, TransactionHistory* transactions) {
+		this->accountNumber = accountNumber;
+		this->accountName = accountName;
+		this->balance = balance;
+		this->transactions = transactions;
+	}
+	void setRight(AccountNode* right){ this->right = right; }
+    void setLeft(AccountNode* left){ this->left = left; }
+
+	int getAccountId() const { return accountNumber; }
+    string getName() const { return accountName; }
+    double getBalance() const { return balance; }
+    TransactionHistory* getHistory() const { return transactions; }
+    AccountNode* getRight() const { return right; }
+    AccountNode* getLeft() const { return left; }
+};
+
+
+
+
+void addEnd(AccountNode* root,AccountNode* newAccount){
+    if(root->getAccountId()<newAccount->getAccountId()){
+        if(root->getRight()==nullptr){
+            root->setRight(newAccount);
+        }else{
+            addEnd(root->getRight(),newAccount);
+        }
+    }else{
+        if(root->getLeft()==nullptr){
+            root->setLeft(newAccount);
+        }else{
+            addEnd(root->getLeft(),newAccount);
+        }
+    }
+}
+
+void addAccount(AccountNode* root){
+    int accountNumber = 0;
+    string accountName = "NewAccount";
+    double balance = 0.0;
+	cout<<"Enter Account ID";
+	cin >> accountNumber;
+	cout<<"Enter Account Name";
+	cin >> accountName;
+	cout<<"Enter Account Balance";
+	cin >> balance;
+
+    TransactionNode* head = new TransactionNode();
+    TransactionHistory* history = new TransactionHistory(head);
+    AccountNode* newAccount = new AccountNode(accountNumber,accountName,balance,history);
+
+    addEnd(root,newAccount);
 };
 
 class QueueNode {
