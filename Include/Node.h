@@ -4,15 +4,15 @@
 // Transaction Node (Linked List)
 class TransactionNode {
 public:
-	std::string type = "";
+	bool iswithdrawal;
 	double amount = 0.0;
-	std::string date = "01/01/1980";
+	string date = "01/01/1980";
 
 	TransactionNode* next = nullptr;
 
 	TransactionNode() {}
-	TransactionNode(std::string type, double amount, std::string date) {
-		this->type = type;
+	TransactionNode(bool iswithdrawal, double amount, string date) {
+		this->iswithdrawal = iswithdrawal;
 		this->amount = amount;
 		this->date = date;
 	}
@@ -28,11 +28,11 @@ public:
 	}
 
 	// append for linked list basically
-	void addTransaction(std::string type, double amount, std::string date) {
+	void addTransaction( bool iswithdrawal, double amount, string date) {
 		/* TODO: add check for type; should be only "withdrawal" or "deposit"
 		 *       add a simple check for date too, maybe only one format
 		 */
-		TransactionNode* newNode = new TransactionNode(type, amount, date);
+		TransactionNode* newNode = new TransactionNode(iswithdrawal, amount, date);
 		if (head == nullptr)
 			head = newNode;
 		else {
@@ -48,14 +48,14 @@ public:
 	void printHistory() {
 		TransactionNode* current = head;
 		if (!current) {
-			std::cout << "No transactions." << std::endl;
+			cout << "No transactions." << endl;
 			return;
 		}
 
 		while (current != nullptr) {
-			std::cout << "Type: " << current->type << std::endl;
-			std::cout << "Amount: " << current->amount << std::endl;
-			std::cout << "Date: " << current->date << "\n\n";
+			cout << "Type: " << current->iswithdrawal << endl;
+			cout << "Amount: " << current->amount << endl;
+			cout << "Date: " << current->date << "\n\n";
 			current = current->next;
 		}
 	}
@@ -75,7 +75,7 @@ public:
 class AccountNode {
 private:
 	int accountNumber;
-	std::string accountName;
+	string accountName;
 	double balance;
 
 	TransactionNode* historyHead;
@@ -83,13 +83,10 @@ private:
 	AccountNode* right;
 };
 
-class 
-
-
 class QueueNode {
 private:
 	int accountNumber;
-	std::string type;
+	string type;
 	double amount;
 };
 
