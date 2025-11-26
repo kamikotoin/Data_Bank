@@ -1,79 +1,95 @@
-using namespace std;
+#pragma once
 #include <iostream>
 
-class history_Node{
-    bool is_Deposit;
-    double amount;
-    string date;
-    string time;
-    history_Node* next_History;
-
+// Transaction Node (Linked List)
+class TransactionNode {
 public:
-    void SetIsDeposit(bool v){ is_Deposit = v; }
-    void SetAmount(double a){ amount = a; }
-    void SetDate(const string& d){ date = d; }
-    void SetTime(const string& t){ time = t; }
-    void SetNext(history_Node* nxt){ next_History = nxt; }
+	std::string type = "";
+	double amount = 0.0;
+	std::string date = "01/01/1980";
 
-    bool IsDeposit() const { return is_Deposit; }
-    double GetAmount() const { return amount; }
-    string GetDate() const { return date; }
-    string GetTime() const { return time; }
-    history_Node* GetNext() const { return next_History; }
+	TransactionNode* next = nullptr;
+
+	TransactionNode() {}
+	TransactionNode(std::string type, double amount, std::string date) {
+		this->type = type;
+		this->amount = amount;
+		this->date = date;
+	}
 };
 
-class account_Node{
-    int account_Id;
-    string account_Name;
-    double balance;
-    history_Node* transaction_History = nullptr;
-    account_Node* right_Child = nullptr;   
-    account_Node* left_Child = nullptr;   
-
+// Transaction Node (Linked List) Manager
+class TransactionHistory {
+private:
+	TransactionNode* head;
 public:
-    void SetAccountId(int Id){ account_Id = Id; }
-    void SetName(const string& name){ account_Name = name; }
-    void SetBalance(double Balance){ balance = Balance; }
-    void SetHistory(history_Node* History){ transaction_History = History; }
-    void SetRight(account_Node* Right){ right_Child = Right; }
-    void SetLeft(account_Node* Left){ left_Child = Left; }
+	TransactionHistory(TransactionNode* head) {
+		this->head = head;
+	}
 
-    int GetAccountId() const { return account_Id; }
-    string GetName() const { return account_Name; }
-    double GetBalance() const { return balance; }
-    history_Node* GetHistory() const { return transaction_History; }
-    account_Node* GetRight() const { return right_Child; }
-    account_Node* GetLeft() const { return left_Child; }
+	// append for linked list basically
+	void addTransaction(std::string type, double amount, std::string date) {
+		/* TODO: add check for type; should be only "withdrawal" or "deposit"
+		 *       add a simple check for date too, maybe only one format
+		 */
+		TransactionNode* newNode = new TransactionNode(type, amount, date);
+		if (head == nullptr)
+			head = newNode;
+		else {
+			TransactionNode* last = head;
+
+			while (last->next != nullptr) {
+				last = last->next;
+			}
+			last->next = newNode;
+		}
+	}
+	// goes through every element of the linked list and prints contents of nodes
+	void printHistory() {
+		TransactionNode* current = head;
+		if (!current) {
+			std::cout << "No transactions." << std::endl;
+			return;
+		}
+
+		while (current != nullptr) {
+			std::cout << "Type: " << current->type << std::endl;
+			std::cout << "Amount: " << current->amount << std::endl;
+			std::cout << "Date: " << current->date << "\n\n";
+			current = current->next;
+		}
+	}
+	// goes through every element of the linked list and counts nodes
+	int countTransactions() {
+		int counter = 0;
+		TransactionNode* current = head;
+
+		while (current->next != nullptr) {
+			counter++;
+			current = current->next;
+		};
+		return counter;
+	}
 };
 
-void addEnd(account_Node* root,account_Node* newAccount){
-    if(root->GetAccountId()<newAccount->GetAccountId()){
-        if(root->GetRight()==nullptr){
-            root->SetRight(newAccount);
-        }else{
-            addEnd(root->GetRight(),newAccount);
-        }
-    }else{
-        if(root->GetLeft()==nullptr){
-            root->SetLeft(newAccount);
-        }else{
-            addEnd(root->GetLeft(),newAccount);
-        }
-    }
-}
+class AccountNode {
+private:
+	int accountNumber;
+	std::string accountName;
+	double balance;
 
-void addAccount(account_Node root){
-    account_Node* newAccount = new account_Node();
-    history_Node* history = new history_Node();
-    int id = 0;
-    string name = "NewAccount";
-    double balance = 0.0;
+	TransactionNode* historyHead;
+	AccountNode* left;
+	AccountNode* right;
+};
 
-    
-    newAccount->SetAccountId(id);
-    newAccount->SetName(name);
-    newAccount->SetBalance(balance);
-    newAccount->SetHistory(history);
-    addEnd(&root,newAccount);
+class 
+
+
+class QueueNode {
+private:
+	int accountNumber;
+	std::string type;
+	double amount;
 };
 
