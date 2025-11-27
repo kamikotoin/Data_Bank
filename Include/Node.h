@@ -79,8 +79,8 @@ private:
 	double balance;
 
 	TransactionHistory* transactions;
-	AccountNode* left;
-	AccountNode* right;
+	AccountNode* left=nullptr;
+	AccountNode* right=nullptr;
 
 	public:
 	AccountNode(int accountNumber, string accountName, double balance, TransactionHistory* transactions) {
@@ -100,26 +100,48 @@ private:
     AccountNode* getLeft() const { return left; }
 };
 
+class BSTaccount {
+	AccountNode* root;
+public:
+	AccountNode* getRoot(){ return root; }
+
+	BSTaccount(AccountNode* root) {
+		this->root = root;
+	}
+	// Recursive add function for inserting a new account into the BST
+	void addEnd(AccountNode* newAccount, AccountNode* current = nullptr){
+		
+		if(root->getAccountId()<newAccount->getAccountId()){
+			if(root->getRight()==nullptr){
+				root->setRight(newAccount);
+			}else{
+				addEnd(newAccount, root->getRight());
+			}
+		}else{
+			if(root->getLeft()==nullptr){
+				root->setLeft(newAccount);
+			}else{
+				addEnd(newAccount, root->getRight());
+			}
+		}
+	}
+	// Recursive search function for finding an account by account number
+	AccountNode* searchAccount(int searchAccountNumber, AccountNode* current){
+		if(searchAccountNumber==current->getAccountId()){
+			return current;
+	}else if(current->getRight()!=nullptr&&searchAccountNumber>current->getAccountId()){
+			return searchAccount(searchAccountNumber,current->getRight());
+	}else if(current->getLeft()!=nullptr&&searchAccountNumber<current->getAccountId()){
+			return searchAccount(searchAccountNumber,current->getLeft());
+	}else {
+		return nullptr;
+	}
+	}
+};
 
 
-
-void addEnd(AccountNode* root,AccountNode* newAccount){
-    if(root->getAccountId()<newAccount->getAccountId()){
-        if(root->getRight()==nullptr){
-            root->setRight(newAccount);
-        }else{
-            addEnd(root->getRight(),newAccount);
-        }
-    }else{
-        if(root->getLeft()==nullptr){
-            root->setLeft(newAccount);
-        }else{
-            addEnd(root->getLeft(),newAccount);
-        }
-    }
-}
-
-void addAccount(AccountNode* root){
+// Function to create and add a new account to the BST
+void addAccount(BSTaccount* root){
     int accountNumber = 0;
     string accountName = "NewAccount";
     double balance = 0.0;
@@ -134,7 +156,7 @@ void addAccount(AccountNode* root){
     TransactionHistory* history = new TransactionHistory(head);
     AccountNode* newAccount = new AccountNode(accountNumber,accountName,balance,history);
 
-    addEnd(root,newAccount);
+    root->addEnd(newAccount, root->getRoot());
 };
 
 class QueueNode {
