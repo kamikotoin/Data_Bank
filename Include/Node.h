@@ -101,7 +101,7 @@ private:
 };
 
 class BSTaccount {
-	AccountNode* root;
+	AccountNode* root=nullptr;;
 public:
 	AccountNode* getRoot(){ return root; }
 
@@ -110,23 +110,42 @@ public:
 	}
 	// Recursive add function for inserting a new account into the BST
 	void addEnd(AccountNode* newAccount, AccountNode* current = nullptr){
-		
-		if(root->getAccountId()<newAccount->getAccountId()){
-			if(root->getRight()==nullptr){
-				root->setRight(newAccount);
+		if (current == nullptr){
+        current = root;
+		}
+		if(newAccount->getAccountId()==current->getAccountId()){
+			cout<<"Same ID cannot exist, please create another account, or change ID"<<endl;
+			return;
+		}
+		if(current->getAccountId()<newAccount->getAccountId()){
+			// if (newAccount->getAccountId()==1300)
+			// {
+				// }
+				cout<<"current id:"<<current->getAccountId()<<endl;
+				
+				if(current->getRight()==nullptr){
+					cout<<newAccount->getAccountId()<<"set to right"<<endl;
+					current->setRight(newAccount);
+				}else{
+					cout<<newAccount->getAccountId()<<" went to right"<<endl;
+					addEnd(newAccount, current->getRight());
+				}
 			}else{
-				addEnd(newAccount, root->getRight());
-			}
-		}else{
-			if(root->getLeft()==nullptr){
-				root->setLeft(newAccount);
+			cout<<"current id:"<<current->getAccountId()<<endl;
+			if(current->getLeft()==nullptr){
+				cout<<newAccount->getAccountId()<<"set to Left"<<endl;
+				current->setLeft(newAccount);
 			}else{
-				addEnd(newAccount, root->getRight());
+				cout<<newAccount->getAccountId()<<" went to Left"<<endl;
+				addEnd(newAccount, current->getLeft());
 			}
 		}
 	}
 	// Recursive search function for finding an account by account number
-	AccountNode* searchAccount(int searchAccountNumber, AccountNode* current){
+	AccountNode* searchAccount(int searchAccountNumber, AccountNode* current=nullptr){
+				if (current == nullptr){
+        current = root;
+		}
 		if(searchAccountNumber==current->getAccountId()){
 			return current;
 	}else if(current->getRight()!=nullptr&&searchAccountNumber>current->getAccountId()){
