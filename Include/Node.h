@@ -4,15 +4,15 @@
 // Transaction Node (Linked List)
 class TransactionNode {
 public:
-	bool iswithdrawal;
+	bool isDeposit;
 	double amount = 0.0;
 	string date = "01/01/1980";
 
 	TransactionNode* next = nullptr;
 
 	TransactionNode() {}
-	TransactionNode(bool iswithdrawal, double amount, string date) {
-		this->iswithdrawal = iswithdrawal;
+	TransactionNode(bool isDeposit, double amount, string date) {
+		this->isDeposit = isDeposit;
 		this->amount = amount;
 		this->date = date;
 	}
@@ -28,11 +28,10 @@ public:
 	}
 
 	// append for linked list basically
-	void addTransaction( bool iswithdrawal, double amount, string date) {
-		/* TODO: add check for type; should be only "withdrawal" or "deposit"
-		 *       add a simple check for date too, maybe only one format
+	void addTransaction( bool isDeposit, double amount, string date) {
+		/* TODO: True=Deposit, False=Withdrawal
 		 */
-		TransactionNode* newNode = new TransactionNode(iswithdrawal, amount, date);
+		TransactionNode* newNode = new TransactionNode(isDeposit, amount, date);
 		if (head == nullptr)
 			head = newNode;
 		else {
@@ -53,7 +52,7 @@ public:
 		}
 
 		while (current != nullptr) {
-			cout << "Type: " << current->iswithdrawal << endl;
+			cout << "Type: " << current->isDeposit << endl;
 			cout << "Amount: " << current->amount << endl;
 			cout << "Date: " << current->date << "\n\n";
 			current = current->next;
@@ -89,6 +88,15 @@ private:
 		this->balance = balance;
 		this->transactions = transactions;
 	}
+	void updateBalance(bool isDeposit, double amount, string date) {
+		if(isDeposit){
+			balance += amount;
+		}else{
+			balance -= amount;
+		}
+		transactions->addTransaction(isDeposit, amount, date);
+	}
+
 	void setRight(AccountNode* right){ this->right = right; }
     void setLeft(AccountNode* left){ this->left = left; }
 
@@ -121,22 +129,22 @@ public:
 			// if (newAccount->getAccountId()==1300)
 			// {
 				// }
-				cout<<"current id:"<<current->getAccountId()<<endl;
+				// cout<<"current id:"<<current->getAccountId()<<endl;
 				
 				if(current->getRight()==nullptr){
-					cout<<newAccount->getAccountId()<<"set to right"<<endl;
+					// cout<<newAccount->getAccountId()<<"set to right"<<endl;
 					current->setRight(newAccount);
 				}else{
-					cout<<newAccount->getAccountId()<<" went to right"<<endl;
+					// cout<<newAccount->getAccountId()<<" went to right"<<endl;
 					addEnd(newAccount, current->getRight());
 				}
 			}else{
 			cout<<"current id:"<<current->getAccountId()<<endl;
 			if(current->getLeft()==nullptr){
-				cout<<newAccount->getAccountId()<<"set to Left"<<endl;
+				// cout<<newAccount->getAccountId()<<"set to Left"<<endl;
 				current->setLeft(newAccount);
 			}else{
-				cout<<newAccount->getAccountId()<<" went to Left"<<endl;
+				// cout<<newAccount->getAccountId()<<" went to Left"<<endl;
 				addEnd(newAccount, current->getLeft());
 			}
 		}
@@ -181,7 +189,53 @@ void addAccount(BSTaccount* root){
 class QueueNode {
 private:
 	int accountNumber;
-	string type;
+	bool isDeposit;
 	double amount;
+	string date;
+
+	QueueNode* next;
+public:
+
+	QueueNode(int accountNumber, bool isDeposit, double amount, string date, QueueNode* next = nullptr) {
+		this->accountNumber = accountNumber;
+		this->isDeposit = isDeposit;
+		this->amount = amount;
+		this->date = date;
+		this->next = next;
+	}
+
+	int getAccountNumber() const { return accountNumber; }
+	bool getIsDeposit() const { return isDeposit; }
+	double getAmount() const { return amount; }
+	QueueNode* getNext() const { return next; }
+
+	void setNext(QueueNode* next) { this->next = next; }
 };
+
+class TransactionQueue {
+	private:
+	QueueNode* front=nullptr;
+	QueueNode* rear=nullptr;
+public:
+	void addQueue(int accountID, bool isDeposit, double amount, string date) {
+		QueueNode* newNode = new QueueNode(accountID, isDeposit, amount, date);
+		if (rear == nullptr) {
+			front = rear = newNode;
+			return;
+		}else{
+			rear->setNext(newNode);
+			rear = newNode;
+		}
+	}
+	QueueNode* removeQueue(){
+		if(front==nullptr){
+			cout<<"Queue is empty!"<<endl;
+			return nullptr;
+		}else if(front==rear){
+			QueueNode* temp = front;
+			front = rear = nullptr;
+			return temp;
+		}
+	}
+}
 
