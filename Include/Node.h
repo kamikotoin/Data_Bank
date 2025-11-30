@@ -73,7 +73,7 @@ public:
 
 class AccountNode {
 private:
-	int accountNumber;
+	int accountID;
 	string accountName;
 	double balance;
 
@@ -82,8 +82,8 @@ private:
 	AccountNode* right=nullptr;
 
 	public:
-	AccountNode(int accountNumber, string accountName, double balance, TransactionHistory* transactions) {
-		this->accountNumber = accountNumber;
+	AccountNode(int accountID, string accountName, double balance, TransactionHistory* transactions) {
+		this->accountID = accountID;
 		this->accountName = accountName;
 		this->balance = balance;
 		this->transactions = transactions;
@@ -100,7 +100,7 @@ private:
 	void setRight(AccountNode* right){ this->right = right; }
     void setLeft(AccountNode* left){ this->left = left; }
 
-	int getAccountId() const { return accountNumber; }
+	int getAccountId() const { return accountID; }
     string getName() const { return accountName; }
     double getBalance() const { return balance; }
     TransactionHistory* getHistory() const { return transactions; }
@@ -139,7 +139,7 @@ public:
 					addEnd(newAccount, current->getRight());
 				}
 			}else{
-			cout<<"current id:"<<current->getAccountId()<<endl;
+			// cout<<"current id:"<<current->getAccountId()<<endl;
 			if(current->getLeft()==nullptr){
 				// cout<<newAccount->getAccountId()<<"set to Left"<<endl;
 				current->setLeft(newAccount);
@@ -169,11 +169,11 @@ public:
 
 // Function to create and add a new account to the BST
 void addAccount(BSTaccount* root){
-    int accountNumber = 0;
+    int accountID = 0;
     string accountName = "NewAccount";
     double balance = 0.0;
 	cout<<"Enter Account ID";
-	cin >> accountNumber;
+	cin >> accountID;
 	cout<<"Enter Account Name";
 	cin >> accountName;
 	cout<<"Enter Account Balance";
@@ -181,14 +181,14 @@ void addAccount(BSTaccount* root){
 
     TransactionNode* head = new TransactionNode();
     TransactionHistory* history = new TransactionHistory(head);
-    AccountNode* newAccount = new AccountNode(accountNumber,accountName,balance,history);
+    AccountNode* newAccount = new AccountNode(accountID,accountName,balance,history);
 
     root->addEnd(newAccount, root->getRoot());
 };
-
+// Queue Node for Transaction Queue
 class QueueNode {
 private:
-	int accountNumber;
+	int accountID;
 	bool isDeposit;
 	double amount;
 	string date;
@@ -196,15 +196,15 @@ private:
 	QueueNode* next;
 public:
 
-	QueueNode(int accountNumber, bool isDeposit, double amount, string date, QueueNode* next = nullptr) {
-		this->accountNumber = accountNumber;
+	QueueNode(int accountID, bool isDeposit, double amount, string date, QueueNode* next = nullptr) {
+		this->accountID = accountID;
 		this->isDeposit = isDeposit;
 		this->amount = amount;
 		this->date = date;
 		this->next = next;
 	}
 
-	int getAccountNumber() const { return accountNumber; }
+	int getAccountNumber() const { return accountID; }
 	bool getIsDeposit() const { return isDeposit; }
 	double getAmount() const { return amount; }
 	QueueNode* getNext() const { return next; }
@@ -217,6 +217,8 @@ class TransactionQueue {
 	QueueNode* front=nullptr;
 	QueueNode* rear=nullptr;
 public:
+
+// Add a new transaction to the end of the queue
 	void addQueue(int accountID, bool isDeposit, double amount, string date) {
 		QueueNode* newNode = new QueueNode(accountID, isDeposit, amount, date);
 		if (rear == nullptr) {
@@ -227,6 +229,7 @@ public:
 			rear = newNode;
 		}
 	}
+	// Remove and return the transaction at the front of the queue
 	QueueNode* removeQueue(){
 		if(front==nullptr){
 			cout<<"Queue is empty!"<<endl;
@@ -235,7 +238,10 @@ public:
 			QueueNode* temp = front;
 			front = rear = nullptr;
 			return temp;
+		}else{
+			QueueNode* temp = front;
+			front = front->getNext();
+			return temp;
 		}
 	}
-}
-
+};
