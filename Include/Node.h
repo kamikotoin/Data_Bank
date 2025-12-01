@@ -58,17 +58,17 @@ public:
 			current = current->next;
 		}
 	}
-	// goes through every element of the linked list and counts nodes
-	int countTransactions() {
-		int counter = 0;
-		TransactionNode* current = head;
+	// // goes through every element of the linked list and counts nodes
+	// int countTransactions() {
+	// 	int counter = 0;
+	// 	TransactionNode* current = head;
 
-		while (current->next != nullptr) {
-			counter++;
-			current = current->next;
-		};
-		return counter;
-	}
+	// 	while (current->next != nullptr) {
+	// 		counter++;
+	// 		current = current->next;
+	// 	};
+	// 	return counter;
+	// }
 };
 
 class AccountNode {
@@ -96,6 +96,15 @@ private:
 		}
 		transactions->addTransaction(isDeposit, amount, date);
 	}
+
+void replaceDataFrom(const AccountNode* other) {
+    // copy values from other into this node
+    this->accountID = other->accountID;
+    this->accountName   = other->accountName;
+    this->balance       = other->balance;
+    this->transactions  = other->transactions;
+}
+
 
 	void setRight(AccountNode* right){ this->right = right; }
     void setLeft(AccountNode* left){ this->left = left; }
@@ -164,6 +173,72 @@ public:
 		return nullptr;
 	}
 	}
+
+	AccountNode* leftMostChild(AccountNode* current){
+	if(current->getLeft()==nullptr){
+			return current;
+		}else{
+			return leftMostChild(current->getLeft());
+		};
+	}
+
+
+
+AccountNode* removeNode(AccountNode* node, int accountID) {
+    if (node == nullptr) return nullptr;
+
+    if (accountID < node->getAccountId()) {
+        AccountNode* newLeft = removeNode(node->getLeft(), accountID);
+        node->setLeft(newLeft);
+        return node;
+    } else if (accountID > node->getAccountId()) {
+        AccountNode* newRight = removeNode(node->getRight(), accountID); 
+        node->setRight(newRight);
+        return node;
+    } else {
+        // found node to delete
+        AccountNode* left = node->getLeft();
+        AccountNode* right = node->getRight();
+
+        // case 1: no children
+        if (left == nullptr && right == nullptr) {
+            // if AccountNode owns transactions, delete here: delete node->getHistory();
+            delete node;
+            return nullptr;
+        }
+
+        // case 2: one child
+        if (left == nullptr) {
+            AccountNode* tmp = right;
+            // if AccountNode owns transactions, delete node->getHistory();
+            delete node;
+            return tmp;
+        }
+        if (right == nullptr) {
+            AccountNode* tmp = left;
+            // if AccountNode owns transactions, delete node->getHistory();
+            delete node;
+            return tmp;
+        }
+
+        // case 3: two children
+        AccountNode* succ = leftMostChild(right);               
+        if (succ != nullptr) {
+            node->replaceDataFrom(succ);                 // copy successor's data into node
+            // remove the successor from right subtree (it will be deleted by recursion)
+            AccountNode* newRight = removeNode(right, succ->getAccountId());
+            node->setRight(newRight);
+        }
+        return node;
+    }
+
+
+}
+	
+void deleteAccount(int deleteAccountID) {
+    root = removeNode(root, deleteAccountID);
+}
+	
 };
 
 
